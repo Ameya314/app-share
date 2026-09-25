@@ -1,0 +1,327 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, "Noto Sans JP", sans-serif;
+    background: #f5f5f5;
+    color: #333;
+}
+
+
+/* =========================
+   カレンダー
+========================= */
+
+.calendar {
+    width: 90%;
+    max-width: 1000px;
+    margin: 50px auto;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+
+/* =========================
+   ヘッダー
+========================= */
+
+.calendar-header {
+    height: 80px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 30px;
+
+    border-bottom: 1px solid #ddd;
+}
+
+.calendar-header h1 {
+    font-size: 24px;
+}
+
+.calendar-header button {
+    width: 40px;
+    height: 40px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #eee;
+
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+.calendar-header button:hover {
+    background: #ddd;
+}
+
+
+/* =========================
+   曜日
+========================= */
+
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+
+    background: #fafafa;
+
+    border-bottom: 1px solid #ddd;
+}
+
+.weekdays div {
+    padding: 15px;
+
+    text-align: center;
+
+    font-weight: bold;
+}
+
+
+/* =========================
+   日付
+========================= */
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.day {
+    min-height: 120px;
+
+    padding: 10px;
+
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+
+    cursor: pointer;
+
+    transition: background 0.2s;
+}
+
+.day:hover {
+    background: #f7f7f7;
+}
+
+
+/* 前月・次月の日付 */
+
+.other-month {
+    color: #bbb;
+    background: #fafafa;
+}
+
+
+/* 今日 */
+
+.today {
+    background: #eef5ff;
+}
+
+.today .day-number {
+    display: inline-flex;
+
+    width: 28px;
+    height: 28px;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #4285f4;
+    color: white;
+}
+
+
+/* 日付番号 */
+
+.day-number {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 14px;
+}
+
+
+/* =========================
+   予定
+========================= */
+
+.event {
+    margin-top: 4px;
+    padding: 4px 6px;
+
+    border-radius: 4px;
+
+    background: #4285f4;
+    color: white;
+
+    font-size: 12px;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    cursor: pointer;
+}
+
+.event:hover {
+    background: #3367d6;
+}
+
+
+/* =========================
+   モーダル
+========================= */
+
+.modal {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.modal.show {
+    display: flex;
+}
+
+
+.modal-content {
+    position: relative;
+
+    width: 90%;
+    max-width: 400px;
+
+    padding: 30px;
+
+    background: white;
+
+    border-radius: 12px;
+}
+
+
+.modal-content h2 {
+    margin-bottom: 10px;
+}
+
+
+#selected-date {
+    margin-bottom: 20px;
+
+    color: #666;
+}
+
+
+/* 閉じるボタン */
+
+.close-button {
+    position: absolute;
+
+    top: 10px;
+    right: 15px;
+
+    border: none;
+
+    background: none;
+
+    font-size: 25px;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   フォーム
+========================= */
+
+#event-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+#event-form label {
+    margin-top: 5px;
+
+    font-weight: bold;
+}
+
+#event-form input {
+    padding: 10px;
+
+    border: 1px solid #ccc;
+    border-radius: 6px;
+
+    font-size: 14px;
+}
+
+#event-form button {
+    margin-top: 10px;
+
+    padding: 12px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: #4285f4;
+    color: white;
+
+    font-size: 15px;
+
+    cursor: pointer;
+}
+
+#event-form button:hover {
+    background: #3367d6;
+}
+
+
+/* =========================
+   スマホ
+========================= */
+
+@media (max-width: 600px) {
+
+    .calendar {
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .day {
+        min-height: 80px;
+        padding: 5px;
+    }
+
+    .event {
+        font-size: 10px;
+    }
+
+    .weekdays div {
+        padding: 10px 5px;
+    }
+
+}
