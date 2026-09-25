@@ -22,6 +22,10 @@
 
             <button id="next-month">&gt;</button>
 
+            <button id="open-tutorial" class="tutorial-button" aria-label="使い方を見る" title="使い方を見る">
+                ?
+            </button>
+
         </header>
 
 
@@ -80,11 +84,37 @@
                 >
 
 
-                <button type="submit">
+                <button id="event-submit" type="submit">
                     追加
                 </button>
 
             </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- インタラクティブチュートリアル -->
+    <div id="tutorial" class="tutorial" aria-hidden="true">
+
+        <div class="tutorial-card" role="dialog" aria-labelledby="tutorial-title" aria-describedby="tutorial-description">
+
+            <div class="tutorial-progress" aria-label="チュートリアルの進行状況">
+                <span id="tutorial-step-count"></span>
+                <span id="tutorial-dots"></span>
+            </div>
+
+            <h2 id="tutorial-title"></h2>
+            <p id="tutorial-description"></p>
+
+            <div class="tutorial-actions">
+                <button id="tutorial-skip" class="tutorial-skip">スキップ</button>
+                <div>
+                    <button id="tutorial-back" class="tutorial-back">戻る</button>
+                    <button id="tutorial-next" class="tutorial-next">次へ</button>
+                </div>
+            </div>
 
         </div>
 
