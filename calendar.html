@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>カレンダー</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="calendar">
+
+        <!-- カレンダーのヘッダー -->
+        <header class="calendar-header">
+
+            <button id="prev-month">&lt;</button>
+
+            <h1 id="current-month"></h1>
+
+            <button id="next-month">&gt;</button>
+
+        </header>
+
+
+        <!-- 曜日 -->
+        <div class="weekdays">
+            <div>日</div>
+            <div>月</div>
+            <div>火</div>
+            <div>水</div>
+            <div>木</div>
+            <div>金</div>
+            <div>土</div>
+        </div>
+
+
+        <!-- 日付 -->
+        <div id="calendar-days" class="calendar-days"></div>
+
+    </main>
+
+
+    <!-- 予定追加モーダル -->
+    <div id="modal" class="modal">
+
+        <div class="modal-content">
+
+            <button id="close-modal" class="close-button">
+                ×
+            </button>
+
+            <h2>予定を追加</h2>
+
+            <p id="selected-date"></p>
+
+            <form id="event-form">
+
+                <label for="event-title">
+                    予定
+                </label>
+
+                <input
+                    type="text"
+                    id="event-title"
+                    placeholder="例：数学の勉強"
+                    required
+                >
+
+
+                <label for="event-time">
+                    時間
+                </label>
+
+                <input
+                    type="time"
+                    id="event-time"
+                >
+
+
+                <button type="submit">
+                    追加
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <script src="main.js"></script>
+
+</body>
+</html>
+
