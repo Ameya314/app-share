@@ -7,6 +7,7 @@ const currentMonthElement = document.getElementById("current-month");
 
 const prevMonthButton = document.getElementById("prev-month");
 const nextMonthButton = document.getElementById("next-month");
+const openTutorialButton = document.getElementById("open-tutorial");
 
 const modal = document.getElementById("modal");
 const closeModalButton = document.getElementById("close-modal");
@@ -16,6 +17,17 @@ const selectedDateElement = document.getElementById("selected-date");
 const eventForm = document.getElementById("event-form");
 const eventTitleInput = document.getElementById("event-title");
 const eventTimeInput = document.getElementById("event-time");
+const eventSubmitButton = document.getElementById("event-submit");
+
+const tutorial = document.getElementById("tutorial");
+const tutorialCard = tutorial.querySelector(".tutorial-card");
+const tutorialTitle = document.getElementById("tutorial-title");
+const tutorialDescription = document.getElementById("tutorial-description");
+const tutorialStepCount = document.getElementById("tutorial-step-count");
+const tutorialDots = document.getElementById("tutorial-dots");
+const tutorialSkipButton = document.getElementById("tutorial-skip");
+const tutorialBackButton = document.getElementById("tutorial-back");
+const tutorialNextButton = document.getElementById("tutorial-next");
 
 
 // =========================
@@ -27,6 +39,37 @@ let currentDate = new Date();
 
 // 選択された日付
 let selectedDate = null;
+
+let tutorialStep = 0;
+let tutorialTarget = null;
+
+const tutorialSteps = [
+    {
+        title: "月を切り替える",
+        description: "左右の矢印で、前後の月の予定を確認できます。",
+        target: () => prevMonthButton
+    },
+    {
+        title: "日付を選ぶ",
+        description: "予定を入れたい日付をクリックすると、入力画面が開きます。",
+        target: () => calendarDays.querySelector(".day:not(.other-month)")
+    },
+    {
+        title: "内容を追加する",
+        description: "予定の名前を入力してください。入力が完了すると次へ進みます。",
+        target: () => eventTitleInput
+    },
+    {
+        title: "予定を追加ボタンを押す",
+        description: "入力した内容をカレンダーに登録するため、「追加」ボタンを押してください。",
+        target: () => eventSubmitButton
+    },
+    {
+        title: "予定を削除する",
+        description: "登録された予定をクリックし、確認画面で削除してください。",
+        target: () => calendarDays.querySelector(".event")
+    }
+];
 
 
 // =========================
@@ -261,6 +304,11 @@ function createDayElement(
         () => {
 
             openModal(date);
+
+            if (tutorial.classList.contains("show") && tutorialStep === 1) {
+                tutorialStep = 2;
+                renderTutorial();
+            }
         }
     );
 
@@ -423,6 +471,27 @@ eventForm.addEventListener(
         // モーダル閉じる
 
         closeModal();
+
+        if (tutorial.classList.contains("show") && tutorialStep === 3) {
+            tutorialStep = 4;
+            renderTutorial();
+        }
+    }
+);
+
+
+eventTitleInput.addEventListener(
+    "input",
+    () => {
+
+        if (
+            tutorial.classList.contains("show") &&
+            tutorialStep === 2 &&
+            eventTitleInput.value.trim()
+        ) {
+            tutorialStep = 3;
+            renderTutorial();
+        }
     }
 );
 
@@ -472,7 +541,152 @@ function deleteEvent(
 
 
     renderCalendar();
+
+    if (tutorial.classList.contains("show") && tutorialStep === 4) {
+        closeTutorial();
+    }
 }
+
+
+// =========================
+// インタラクティブチュートリアル
+// =========================
+
+function renderTutorial() {
+
+    const step = tutorialSteps[tutorialStep];
+
+    tutorialTitle.textContent = step.title;
+    tutorialDescription.textContent = step.description;
+    tutorialStepCount.textContent = `${tutorialStep + 1} / ${tutorialSteps.length}`;
+    tutorialNextButton.textContent =
+        tutorialStep === tutorialSteps.length - 1 ? "完了" : "次へ";
+    tutorialBackButton.hidden = tutorialStep === 0;
+
+    tutorial.classList.toggle(
+        "input-step",
+        tutorialStep === 2 || tutorialStep === 3
+    );
+
+    tutorialDots.innerHTML = "";
+
+    tutorialSteps.forEach((_, index) => {
+
+        const dot = document.createElement("span");
+        dot.classList.add("tutorial-dot");
+
+        if (index === tutorialStep) {
+            dot.classList.add("active");
+        }
+
+        tutorialDots.appendChild(dot);
+    });
+
+    if (tutorialTarget) {
+        tutorialTarget.classList.remove("tutorial-target");
+    }
+
+    tutorialTarget = step.target();
+
+    if (tutorialTarget) {
+        tutorialTarget.classList.add("tutorial-target");
+        positionTutorialCard(tutorialTarget);
+    } else {
+        centerTutorialCard();
+    }
+}
+
+
+function positionTutorialCard(target) {
+
+    const targetRect = target.getBoundingClientRect();
+    const cardWidth = tutorialCard.offsetWidth;
+    const margin = 16;
+    const gap = 22;
+
+    let left = targetRect.left + targetRect.width / 2 - cardWidth / 2;
+    let top = targetRect.bottom + gap;
+
+    left = Math.max(margin, Math.min(left, window.innerWidth - cardWidth - margin));
+
+    if (top + tutorialCard.offsetHeight > window.innerHeight - margin) {
+        top = targetRect.top - tutorialCard.offsetHeight - gap;
+    }
+
+    if (top < margin) {
+        top = margin;
+    }
+
+    tutorialCard.style.left = `${left}px`;
+    tutorialCard.style.top = `${top}px`;
+    tutorialCard.style.bottom = "auto";
+    tutorialCard.style.transform = "none";
+}
+
+
+function centerTutorialCard() {
+
+    tutorialCard.style.left = "50%";
+    tutorialCard.style.top = "50%";
+    tutorialCard.style.bottom = "auto";
+    tutorialCard.style.transform = "translate(-50%, -50%)";
+}
+
+
+function openTutorial() {
+
+    tutorialStep = 0;
+    tutorial.classList.add("show");
+    tutorial.setAttribute("aria-hidden", "false");
+    renderTutorial();
+}
+
+
+function closeTutorial() {
+
+    tutorial.classList.remove("show");
+    tutorial.setAttribute("aria-hidden", "true");
+
+    if (tutorialTarget) {
+        tutorialTarget.classList.remove("tutorial-target");
+        tutorialTarget = null;
+    }
+
+    localStorage.setItem("calendarTutorialSeen", "true");
+}
+
+
+function moveTutorial(stepChange) {
+
+    tutorialStep += stepChange;
+
+    if (tutorialStep >= tutorialSteps.length) {
+        closeTutorial();
+        return;
+    }
+
+    tutorialStep = Math.max(0, tutorialStep);
+    renderTutorial();
+}
+
+
+openTutorialButton.addEventListener("click", openTutorial);
+tutorialSkipButton.addEventListener("click", closeTutorial);
+tutorialBackButton.addEventListener("click", () => moveTutorial(-1));
+
+document.addEventListener("keydown", (e) => {
+
+    if (e.key === "Escape" && tutorial.classList.contains("show")) {
+        closeTutorial();
+    }
+});
+
+window.addEventListener("resize", () => {
+
+    if (tutorial.classList.contains("show")) {
+        renderTutorial();
+    }
+});
 
 
 // =========================
@@ -488,6 +702,11 @@ prevMonthButton.addEventListener(
         );
 
         renderCalendar();
+
+        if (tutorial.classList.contains("show") && tutorialStep === 0) {
+            tutorialStep = 1;
+            renderTutorial();
+        }
     }
 );
 
@@ -505,6 +724,11 @@ nextMonthButton.addEventListener(
         );
 
         renderCalendar();
+
+        if (tutorial.classList.contains("show") && tutorialStep === 0) {
+            tutorialStep = 1;
+            renderTutorial();
+        }
     }
 );
 
@@ -514,4 +738,8 @@ nextMonthButton.addEventListener(
 // =========================
 
 renderCalendar();
+
+if (!localStorage.getItem("calendarTutorialSeen")) {
+    openTutorial();
+}
 
